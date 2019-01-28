@@ -1,0 +1,9 @@
+connection.url=jdbc:mysql://{{ .Env.DB_HOST }}:3306/{{ .Env.DB_DATABASE }}?autoReconnect=true&sessionVariables=default_storage_engine=InnoDB&useUnicode=true&characterEncoding=UTF-8
+module.allow_web_admin={{ .Env.MODULE_WEB_ADMIN }}
+connection.username={{ .Env.MYSQL_USER }}
+auto_update_database={{ .Env.DB_AUTO_UPDATE }}
+create_database_user=false
+connection.password={{ .Env.MYSQL_PASSWORD }}
+application_data_directory={{ .Env.OPENMRS_HOME }}
+create_tables={{ .Env.DB_CREATE_TABLES }}
+has_current_openmrs_database=true

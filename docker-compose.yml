@@ -1,0 +1,72 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:5.6
+    container_name: sync2_1_x_mysql
+    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
+    environment:
+      MYSQL_DATABASE: openmrs
+      MYSQL_ROOT_PASSWORD: Admin123
+      MYSQL_USER: openmrs
+      MYSQL_PASSWORD: Admin123
+    ports:
+      - "${MYSQL_DEV_PORT}:3306"
+    volumes:
+      - ./dbdump:/docker-entrypoint-initdb.d
+      - db-data:/var/lib/mysql
+
+  parent:
+    build:
+      context: openmrs-platform-1_11_3
+      args:
+        INSTANCE_NAME: parent
+    image: openmrs-platform_parent:1.11.3
+    container_name: sync2_1_11_3_parent
+    depends_on:
+      - db
+    environment:
+      DB_DATABASE: parent
+      DB_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Admin123
+      DB_CREATE_TABLES: 'false'  # change to 'true' if using an empty database
+      DB_AUTO_UPDATE: 'false'    # change to 'true' if using an empty database
+      MODULE_WEB_ADMIN: 'true'   # allow web admin on OpenMRS
+      DEBUG: 'true'
+    ports:
+      - "${TOMCAT_DEV_PORT_PARENT}:8080"
+      - "${TOMCAT_DEV_DEBUG_PORT_PARENT}:1044"
+    volumes:
+      - parent-data:/usr/local/tomcat/.OpenMRS
+      - ./modules:/root/.OpenMRS/modules/
+
+  child1:
+    build:
+      context: openmrs-platform-1_11_3
+      args:
+        INSTANCE_NAME: child1
+    image: openmrs-platform_child1:1.11.3
+    container_name: sync2_1_11_3_child1
+    depends_on:
+      - db
+    environment:
+      DB_DATABASE: child1
+      DB_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Admin123
+      DB_CREATE_TABLES: 'false'  # change to 'true' if using an empty database
+      DB_AUTO_UPDATE: 'false'    # change to 'true' if using an empty database
+      MODULE_WEB_ADMIN: 'true'   # allow web admin on OpenMRS
+      DEBUG: 'true'
+    ports:
+      - "${TOMCAT_DEV_PORT_CHILD1}:8080"
+      - "${TOMCAT_DEV_DEBUG_PORT_CHILD1}:1044"
+    volumes:
+      - child1-data:/usr/local/tomcat/.OpenMRS
+      - ./modules:/root/.OpenMRS/modules/
+
+volumes:
+  db-data:
+  child1-data:
+  parent-data:
