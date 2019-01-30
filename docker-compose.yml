@@ -36,7 +36,7 @@ services:
       DEBUG: 'true'
     ports:
       - "${TOMCAT_DEV_PORT_PARENT}:8080"
-      - "${TOMCAT_DEV_DEBUG_PORT_PARENT}:1044"
+      - "${TOMCAT_DEV_DEBUG_PORT_PARENT}:8000"
     volumes:
       - parent-data:/usr/local/tomcat/.OpenMRS
       - ./modules:/root/.OpenMRS/modules/
@@ -61,7 +61,7 @@ services:
       DEBUG: 'true'
     ports:
       - "${TOMCAT_DEV_PORT_CHILD1}:8080"
-      - "${TOMCAT_DEV_DEBUG_PORT_CHILD1}:1044"
+      - "${TOMCAT_DEV_DEBUG_PORT_CHILD1}:8000"
     volumes:
       - child1-data:/usr/local/tomcat/.OpenMRS
       - ./modules:/root/.OpenMRS/modules/
